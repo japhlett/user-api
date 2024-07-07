@@ -1,19 +1,33 @@
 import express from "express";
+import { signInRouter } from "./routes/signIn_route.js";
+import { signUpRouter } from "./routes/signUp_route.js";
+import { dbConnection } from "./config/db.js";
+
+// connect to database
+dbConnection();
 
 
 // creating the express app
-const user = express();
-
+const app= express();
+expressOasGenerator.handleResponses(app, {
+    alwaysServeDocs: true,
+    tags : ['signin','signUp'],
+    mongooseModels:mongoose.modelNames(),
+});
 
 
 // applying middlewares
-user.use(express.json());
+app.use(express.json());
 
 
-
+// using routes
+app.use(signInRouter);
+app.use(signUpRouter);
+expressOasGenerator.handleRequests();
+app.use((req, res) => res.redirect('/api-docs/'))
 
 // listening for incoming requests
 const port = process.env.PORT || 4555;
-user.listen(port, () => {
+app.listen(port, () => {
     console.log(`App listening on port 4555`);
 });

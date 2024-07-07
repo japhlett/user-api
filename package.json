@@ -12,8 +12,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@reis/mongoose-to-json": "^3.0.0",
     "bcrypt": "^5.1.1",
     "express": "^4.19.2",
+    "express-oas-generator": "^1.0.46",
     "express-validator": "^7.1.0",
     "mongoose": "^8.4.5"
   },
