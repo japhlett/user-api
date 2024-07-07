@@ -6,7 +6,7 @@ import { toJSON } from "@reis/mongoose-to-json";
     email:{type:String, required:true, unique:true},
     contact:{type:String},
     username:{type:String, required:true,unique:true},
-    password: {type:String, required:true, unique:true}
+    password: {type:String, required:true}
 },{
     timestamps:true
 });

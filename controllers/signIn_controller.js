@@ -2,37 +2,41 @@ import { signInModel } from "../models/signIn_model.js";
 import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 
-// create a new user
 export const postSignIn = async (req, res) => {
-
-    // Validating user Input
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    //  getting the username and password from the req.body
     const { username, password } = req.body;
+    console.log('Attempting to sign in with username:', username);
+
     try {
-        // checking if the username entered exists
-        const user = await signInModel.findOne({ username });
+        // Check if the username exists in the database
+        const user = await signInModel.findOne({ username }).populate('signUpId');
+
         if (!user) {
-            return res.status(400).json({ error: 'Invalid credentials' });
-        }
-        // checking if the password entered matches with what is stored
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
+            console.log('User not found for username:', username);
             return res.status(400).json({ error: 'Invalid credentials' });
         }
 
-        // getting a response if successful
+        // Check if the password matches
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            console.log('Password does not match for username:', username);
+            return res.status(400).json({ error: 'Invalid credentials' });
+        }
+
+        console.log('Sign-in successful for username:', username);
         res.status(200).json({ message: 'Sign-in successful', user });
 
     } catch (error) {
-        console.log('There was an issue with your sigup detail', error);
+        console.error('Error signing in:', error);
         res.status(500).json({ error: 'Server error' });
     }
 };
+
 
 
 // get the details of a user
